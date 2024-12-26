@@ -1,7 +1,3 @@
-<h1>Project Shot Details</h1>
-<br>
-| 	Main Folder	 | 	SubFolder_1	 | 	SubFolder_2	 | 	Description	 | 
-| 	:-----:	 | 	:-----:	 |  :-----:	 |  :-----:	 |
-| 	1_bmi_calculator	| 	frontend	| 	----	 | Simple BMI calculator to track health and fitness goals. 		 |
-
-
+| Sr. No. | Main Folder      | Sub Folder 1 |  Sub Folder 2 | Description                           |
+|---------|------------------|--------------|---------------|---------------------------------------|
+| 1       | 1_bmi_calculator | frontend     | ----          | Simple BMI Calculator to track health |
