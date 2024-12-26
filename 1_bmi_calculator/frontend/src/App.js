@@ -1,9 +1,10 @@
+import BmiCard from "./components/BmiCard";
 
 
 function App() {
   return (
     <>
-      <h1>hello frontend</h1>
+      <BmiCard/>
     </>
   );
 }
