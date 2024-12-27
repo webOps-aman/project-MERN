@@ -8,12 +8,77 @@ const BmiCard = () => {
     const [cardHeaderDarkMode, setCardHeaderDarkMode] = useState(false);
     const [groupBtnDarkMode, setGroupBtnDarkMode] = useState(false);
 
+    const [user, setUser ] = useState({
+      fullName: "",
+      age: "",
+      weight: "",
+      height: "",
+      bmi: "",
+      bmiMessage: ""
+    });
+
+    const handleInput = (e) => {
+      let name = e.target.name;
+      let value = e.target.value;
+
+      setUser({
+        ...user,
+        [name]: value,
+      });
+    };
+
+
     const toggleDarkMode = () => {
         setBmiSectionDarkMode(!bmiSectionDarkMode);
         setCardHeaderDarkMode(!cardHeaderDarkMode);
         setGroupBtnDarkMode(!groupBtnDarkMode);
     }
 
+    const handleSubmit = (e) => {
+      e.preventDefault();
+    
+      if (parseInt(user.weight) === 0 || parseInt(user.height) === 0) {
+        alert("Please enter valid weight & height");
+      } else {
+        let bmi = Number(user.weight / (user.height * user.height)) * 703;
+        const updatedBmi = bmi.toFixed(1);
+        let bmiMessage = "";
+    
+        if (bmi < 18.5) {
+          bmiMessage = "You are underweight";
+        } else if (bmi >= 18.5 && bmi < 25) {
+          bmiMessage = "You have a normal weight";
+        } else if (bmi >= 25 && bmi < 30) {
+          bmiMessage = "You are overweight";
+        } else {
+          bmiMessage = "You are obese";
+        }
+    
+        setUser((prevUser) => {
+          const bmiUserData = {
+            ...prevUser,
+            bmi: updatedBmi,
+            bmiMessage: bmiMessage,
+          };
+    
+          console.log("Complete User Data", bmiUserData);
+    
+          return bmiUserData;
+        });
+      }
+    };
+
+    const reloadForm = () => {
+      setUser({
+        fullName:"",
+        age:"",
+        weight:"",
+        height:"",
+        bmi:"",
+        bmiMessage:"",
+      })
+    }
+    
   return (
     <>
     <section className={`${bmiSectionDarkMode ? 'bmiSectionDarkMode' : 'bmi-section'}`}>
@@ -24,51 +89,76 @@ const BmiCard = () => {
                 <div className="card">
                   <div className={`${cardHeaderDarkMode ? 'cardHeaderDarkMode' : 'card-header'}`}>
                     <div className="row">
-                      <div className="col-md-9 fw-bold pt-1">BMI Calculator</div>
+                      <div className="col-md-9 fw-bold py-1">BMI Calculator</div>
                       <div className="col-md-3">
                         <DarkModeButton onToggle={toggleDarkMode}/>
                       </div>
                     </div>
                   </div>
                   <div className="card-body">
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className='row mb-4'>
 
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label" for="fullName">Your Full Name</label>
+                        <div className="col-md-6">
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="fullName">Your Full Name</label>
                                 <input 
                                     type="text" 
-                                    class="form-control" 
-                                    id="fullName" 
+                                    className="form-control" 
+                                    id="fullName"
+                                    name="fullName"
+                                    value={user.fullName}
+                                    onChange={handleInput}
                                     placeholder="Full Name..." 
                                     autoComplete='off'
                                     required
                                 />
                             </div>
                         </div>
-
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label" for="weight">Your Weight (kg)</label>
+                        <div className="col-md-6">
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="age">Your Age</label>
                                 <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="weight" 
-                                    placeholder="Weight (kg)..." 
+                                    type="number" 
+                                    className="form-control" 
+                                    id="age"
+                                    name="age"
+                                    value={user.age}
+                                    onChange={handleInput}
+                                    placeholder="Age..." 
                                     autoComplete='off'
                                     required
                                 />
                             </div>
                         </div>
 
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label" for="height">Your Height (inch)</label>
+                        <div className="col-md-12">
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="weight">Your Weight (kg)</label>
                                 <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="height" 
+                                    type="number" 
+                                    className="form-control" 
+                                    id="weight" 
+                                    name="weight"
+                                    value={user.weight}
+                                    onChange={handleInput}
+                                    placeholder="Weight (kg)..."
+                                    autoComplete='off'
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="col-md-12">
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="height">Your Height (inch)</label>
+                                <input 
+                                    type="number" 
+                                    className="form-control" 
+                                    id="height"
+                                    name="height"
+                                    value={user.height}
+                                    onChange={handleInput}
                                     placeholder="Height (inch)..." 
                                     autoComplete='off'
                                     required
@@ -76,11 +166,11 @@ const BmiCard = () => {
                             </div>
                         </div>
 
-                        <div class="col">
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <button className={`btn ${groupBtnDarkMode ? 'groupBtnDarkMode' : 'group-btn'}`} type="button">Submit</button>
-                                    <button className={`btn ${groupBtnDarkMode ? 'groupBtnDarkMode' : 'group-btn'}`} type="button">Reload</button>
+                        <div className="col">
+                            <div className="mb-3">
+                                <div className="d-flex justify-content-center gap-2">
+                                    <button className={`btn ${groupBtnDarkMode ? 'groupBtnDarkMode' : 'group-btn'}`} type="submit">Submit</button>
+                                    <button className={`btn ${groupBtnDarkMode ? 'groupBtnDarkMode' : 'group-btn'}`} type="button" onClick={reloadForm}>Reload</button>
                                 </div>
                             </div>
                         </div>
@@ -88,11 +178,14 @@ const BmiCard = () => {
                         </div>
                     </form>
                   </div>
-                  {/* <ul class="list-group list-group-flush">
-                    <li class="list-group-item">An item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                </ul> */}
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                      {user.bmi && <h3>Your BMI is: {user.bmi}</h3>}
+                    </li>
+                    <li className="list-group-item">
+                      {user.bmiMessage && <p>{user.bmiMessage}</p>}
+                    </li>
+                </ul>
                 </div>
 {/* -----bmi calculator end here----- */}
             </div>
