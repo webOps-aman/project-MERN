@@ -1,3 +1,6 @@
+const User = require('../models/user-model');
+
+
 const home = async (req, res) => {
     try {
         res.status(200).send("Hello home, from controller side");
@@ -8,10 +11,21 @@ const home = async (req, res) => {
 
 const bmiuserdata = async (req, res) => {
     try {
-        res.status(200).send("Hello, BMI user data from controller side");
+        // console.log(req.body);
+        // const data = req.body;
+        const {fullName, age, weight, height, bmi, bmiMessage} = req.body;
+        const userExit = await User.findOne({fullName});
+
+        if(userExit){
+            return res.status(400).json({msg: "User already Exists"});
+        }
+
+        const userCreated = await User.create({fullName, age, weight, height, bmi, bmiMessage});
+
+
+        res.status(200).json({msg: userCreated});
     } catch (error) {
-        // console.log(`Error From auth-controller bmiuserdata-side ${error}`);
-        res.status(400).send({msg: "Page Not Found"})
+        res.status(500).json("Interval Server Error");
     }
 };
 
