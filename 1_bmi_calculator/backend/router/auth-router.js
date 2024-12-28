@@ -6,5 +6,6 @@ const authControllers = require("../controllers/auth-controller");
 
 router.route("/").get(authControllers.home);
 router.route("/bmiuserdata").post(authControllers.bmiuserdata);
+router.route("/userrecord").get(authControllers.userrecord);
 
 module.exports = router;

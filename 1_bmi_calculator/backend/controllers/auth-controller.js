@@ -29,4 +29,17 @@ const bmiuserdata = async (req, res) => {
     }
 };
 
-module.exports = {home, bmiuserdata};
+
+const userrecord = async (req, res) => {
+    try {
+        const response = await User.find();
+        if(!response){
+            res.status(404).json({msg: "No user found"});
+        }
+        res.status(200).json({msg: response});
+    } catch (error) {
+        console.log(`error from backend userrecord ${error}`);
+    }
+}
+
+module.exports = {home, bmiuserdata, userrecord};

@@ -19,7 +19,9 @@ app.use(express.json());
 // -----middleware end here-----
 
 const router = require("./router/auth-router");
+const dataRoute = require('./router/auth-router');
 app.use("/api/auth", router);
+app.use("/api/data", dataRoute);
 
 
 // -----db and server start here-----
