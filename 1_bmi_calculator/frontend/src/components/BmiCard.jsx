@@ -34,39 +34,66 @@ const BmiCard = () => {
         setGroupBtnDarkMode(!groupBtnDarkMode);
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
     
       if (parseInt(user.weight) === 0 || parseInt(user.height) === 0) {
         alert("Please enter valid weight & height");
+        return;
+      }
+    
+      let bmi = Number(user.weight / (user.height * user.height)) * 703;
+      const updatedBmi = bmi.toFixed(1);
+      let bmiMessage = "";
+    
+      if (bmi < 18.5) {
+        bmiMessage = "You are underweight";
+      } else if (bmi >= 18.5 && bmi < 25) {
+        bmiMessage = "You have a normal weight";
+      } else if (bmi >= 25 && bmi < 30) {
+        bmiMessage = "You are overweight";
       } else {
-        let bmi = Number(user.weight / (user.height * user.height)) * 703;
-        const updatedBmi = bmi.toFixed(1);
-        let bmiMessage = "";
+        bmiMessage = "You are obese";
+      }
     
-        if (bmi < 18.5) {
-          bmiMessage = "You are underweight";
-        } else if (bmi >= 18.5 && bmi < 25) {
-          bmiMessage = "You have a normal weight";
-        } else if (bmi >= 25 && bmi < 30) {
-          bmiMessage = "You are overweight";
-        } else {
-          bmiMessage = "You are obese";
-        }
+      const bmiUserData = {
+        ...user,
+        bmi: updatedBmi,
+        bmiMessage: bmiMessage,
+      };
     
-        setUser((prevUser) => {
-          const bmiUserData = {
-            ...prevUser,
-            bmi: updatedBmi,
-            bmiMessage: bmiMessage,
-          };
+      setUser(bmiUserData);
     
-          console.log("Complete User Data", bmiUserData);
-    
-          return bmiUserData;
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/bmiuserdata', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bmiUserData),
         });
+    
+        if (!response.ok) {
+          throw new Error("Failed to send BMI data");
+        }else if(response.ok){
+          setUser({
+            fullName: "",
+            age: "",
+            weight: "",
+            height: "",
+            bmi: "",
+            bmiMessage: ""
+          });
+          alert("Data has been successfully sent to the database.");
+        }
+
+    
+        console.log(response);
+      } catch (error) {
+        console.error("Error sending BMI data:", error);
       }
     };
+    
 
     const reloadForm = () => {
       setUser({
