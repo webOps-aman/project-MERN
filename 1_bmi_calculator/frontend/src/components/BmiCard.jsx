@@ -126,6 +126,24 @@ const BmiCard = () => {
     }
   };
 
+  const deleteUser = async (id) => {
+    try {
+      console.log(id);
+      const response = await fetch(`http://localhost:5000/api/data/delete/${id}`, {
+          method: "DELETE",
+      });
+
+      const data = await response.json();
+      console.log(`User after delete:`, data);
+
+      if(response.ok){
+        getUserData();
+      }
+    } catch (error) {
+      console.log("Error deleting user:", error);
+    }
+};
+
   useEffect(() => {
     getUserData();
   }, []);
@@ -138,6 +156,8 @@ const BmiCard = () => {
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+  
 
   return (
     <>
@@ -251,7 +271,7 @@ const BmiCard = () => {
                   All User Data
                 </div>
                 {/* -----table start here----- */}
-                <table className="table">
+                <table className="table table-hover">
                   <thead>
                     <tr>
                       <th scope="col">Id</th>
@@ -275,12 +295,7 @@ const BmiCard = () => {
                         <td>{record.bmi}</td>
                         <td>{record.bmiMessage}</td>
                         <td>
-                          <button
-                            type="button"
-                            className="btn btn-danger"
-                          >
-                            Delete
-                          </button>
+                          <button type="button" className="btn btn-danger" onClick={() => deleteUser(record._id)}>Delete</button>
                         </td>
                       </tr>
                     ))}
