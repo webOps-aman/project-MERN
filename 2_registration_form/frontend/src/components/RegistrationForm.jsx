@@ -22,10 +22,37 @@ const RegistrationForm = () => {
         })
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(user);
-    }
+
+        try {
+            const response = await fetch("http://localhost:4000/",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(user)
+            });
+            
+            if(response.ok){
+                setUser({
+                    fullname: "",
+                    age: "",
+                    email: "",
+                    city: "",
+                    pincode: "",
+                    phonenumber: "",
+                    occupation: ""
+                })
+            }
+
+            console.log(response);
+        } catch (error) {
+            console.log(`Error from Registration ${error}`);
+        }
+
+    };
 
   return (
     <>
