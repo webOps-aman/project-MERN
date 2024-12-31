@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './RegistrationForm.css';
+import { toast } from 'react-toastify';
 
 const RegistrationForm = () => {
 
@@ -48,6 +49,7 @@ const RegistrationForm = () => {
             }
 
             console.log(response);
+            toast.success("Registration Successfully");
         } catch (error) {
             console.log(`Error from Registration ${error}`);
         }
