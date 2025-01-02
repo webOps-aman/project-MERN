@@ -264,7 +264,7 @@ const BmiCard = () => {
               </div>
               {/* -----bmi calculator end here----- */}
             </div>
-            {/* -----record bmi user data start here----- */}
+{/* -----record bmi user data start here----- */}
             <div className="col-md-7">
               <div className="card">
                 <div className="card-header text-center fw-bold">
@@ -327,7 +327,7 @@ const BmiCard = () => {
                 {/* -----table end here----- */}
               </div>
             </div>
-            {/* -----record bmi user data end here----- */}
+{/* -----record bmi user data end here----- */}
           </div>
         </div>
       </section>

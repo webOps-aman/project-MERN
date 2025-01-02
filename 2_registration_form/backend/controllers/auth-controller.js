@@ -18,10 +18,16 @@ const home = async (req, res) => {
 
 const showdata = async (req, res) => {
     try {
-        res.status(200).json({message: req.body});
+        const response = await Register.find();
+        if (response.length === 0) {
+            return res.status(404).json({ msg: "No user found" }); // Use `return` to ensure only one response is sent
+        }
+        res.status(200).json({ msg: response });
     } catch (error) {
-        res.status(500).json("Interval Server Error");
+        console.log(`error from backend userrecord ${error}`);
+        res.status(500).json({ msg: "Internal Server Error" }); // Ensure error response is sent
     }
 };
+
 
 module.exports = {home, showdata};
