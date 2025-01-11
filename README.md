@@ -2,4 +2,4 @@
 |---------|------------------|--------------|---------------|---------------------------------------|
 | 1       | 1_bmi_calculator | frontend     | backend       | Simple BMI Calculator to track health using react and bootstrap |
 | 2       | 2_registration_form | frontend     | backend       | Simple Registration form using react and bootstrap |
-| 3       | e-commerce | frontend     | backend       | using react & tailwind css |
+| 3       | e-commerce-1 | frontend     | backend       | using react & tailwind css |
