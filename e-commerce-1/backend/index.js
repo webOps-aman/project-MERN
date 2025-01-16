@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const { error } = require("console");
 
 app.use(express.json());
 app.use(cors());
@@ -100,7 +101,109 @@ app.get("/allproducts", async (req, res) => {
     res.send(products);
 })
 
+//Schema creating for user model
+const Users = mongoose.model('Users',{
+    name: {type: String,},
+    email: {type: String, unique: true,},
+    password: {type: String,},
+    cartData: {type: Object,},
+    date: {type: Date, default: Date.now,},
+})
 
+//creating endpoint for registering the use
+app.post("/signup", async (req, res) => {
+    try {
+        // Check if a user with the same email already exists
+        const check = await Users.findOne({ email: req.body.email });
+        if (check) {
+            return res.status(400).json({ success: false, errors: "Existing user found with the same email address." });
+        }
+
+        // Initialize cart data
+        const cart = new Array(300).fill(0); // Creates an array with 300 elements, all set to 0
+
+        // Create a new user
+        const user = new Users({
+            name: req.body.username,
+            email: req.body.email,
+            password: req.body.password, // Consider hashing the password for security
+            cartData: cart,
+        });
+
+        // Save the user to the database
+        await user.save();
+
+        // Generate JWT token
+        const data = { user: { id: user.id } };
+        const token = jwt.sign(data, 'secret_ecom', { expiresIn: '1h' }); // Add an expiration time for better security
+
+        // Respond with success and the token
+        return res.status(201).json({ success: true, token });
+    } catch (error) {
+        console.error("Error registering user:", error);
+        return res.status(500).json({ success: false, errors: "Internal Server Error" });
+    }
+});
+
+//creating user login
+app.post("/login", async (req, res) => {
+    let user = await Users.findOne({email: req.body.email});
+    if(user){
+        const passCompare = req.body.password === user.password;
+        if(passCompare){
+            const data = {
+                user: {id: user.id}
+            }
+            
+            const token = jwt.sign(data, 'secret_ecom');
+            res.json({success: true, token});
+        }else{
+            res.json({success: false, errors: "Wrong Password"});
+        }
+    }else{
+        res.json({success: false, errors: "wrong email id"});
+    }
+})
+
+//creating endpoint for new collection data
+app.get("/newcollection", async (req, res) => {
+    let products = await Product.find({});
+    let newcollection = products.slice(1).slice(-8);
+    console.log("new collection fetched");
+    res.send(newcollection);
+})
+
+//creating endpoint for popular
+app.get("/popularinwomen", async (req, res) => {
+    let products = await Product.find({category: "women"});
+    let popular_in_women = products.slice(0, 4);
+    console.log("popular in women clothes fetched");
+    res.send(popular_in_women);
+})
+
+//creating middleware to fetch user
+const fetchUser = async (req, res, next) => {
+    const token = req.header('auth-token');
+    if(!token){
+        res.status(401).send({errors: "please authenticate using valid token"})
+    }else{
+        try {
+            const data = jwt.verify(token, 'secret_ecom');
+            req.user = data.user;
+            next();
+        } catch (error) {
+            res.status(401).send({errors: "Please authenticate using a valid token"})
+        }
+    }
+
+}
+
+//creating endpoint for adding products in cartdata
+app.post("/addtocart", fetchUser, async (req, res) => {
+    let userData = await Users.findOne({_id:req.user.id});
+    console.log(userData)
+
+})
 
 app.listen(port, (error) => {
     if(!error){
